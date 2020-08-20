@@ -311,7 +311,7 @@ def get_comments(browser, etablissement, query, link):
     
     # update the hotel_links list of the query, so when we have to do scrap again we can resume at the right spot
     try:
-        backup_links = pd.read_csv(f'backup_hotel_links_{query}.csv')
+        backup_links = pd.read_csv(f'datasets/backup_hotel_links_{query}.csv')
         mask = backup_links['link'] == link
         backup_links.loc[mask, 'has_been_scrapped'] = 1
         backup_links.to_csv(f'datasets/backup_hotel_links_{query}.csv', index=False)
@@ -373,7 +373,7 @@ def open_comments_panel(browser):
     return etablissement
 
 
-def scrap_comments(query, nb_comments=1000):
+def scrap_comments(query, nb_comments=3000):
     """
     global function to scrap Booking comments. We want to gather the hotel links first then iterate over them 
     to get at least 300 comments per hotel.
@@ -460,7 +460,7 @@ def merge_datasets(cities):
 
 
 if __name__ == "__main__" :
-    cities = ['Paris']
+    cities = ['Paris', 'Marseille', 'Nice']
 
     with multiprocessing.Pool() as pool:
         pool.map(scrap_comments, cities)
