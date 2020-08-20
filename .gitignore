@@ -1,0 +1,4 @@
+.tox
+.ipynb_checkpoints
+venv
+datasets/.ipynb_checkpoints
