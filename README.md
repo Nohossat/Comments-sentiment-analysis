@@ -1,4 +1,4 @@
-# Booking Sentiment Analysis - Nohossat, Valérie, Williams
+# Booking Sentiment Analysis
 
 ## Consignes
 
@@ -30,7 +30,6 @@ Pour chaque hôtel, on récupère au maximum 300 commentaires et les information
 - **NOM** : nom du client ayant laissé le commentaire
 - **PAYS** : pays de provenance du client
 - **FAVORITE** : est-ce que le client a marqué l'établissement parmi ces favoris ?
-- **DATE** : date d'envoi du commentaire
 - **TITRE** : titre du commentaire laissé par le client
 - **BONS POINTS** : les aspects positifs de l'expérience
 - **MAUVAIS POINTS** : les aspects négatifs de l'expérience
@@ -57,8 +56,22 @@ Lors du preprocessing, on s'est rendu compte qu'il y avait une prédominance des
 
 ## 2 - Analyse des données
 
+TBD
+
 ## 3 - Modélisation
+
+TBD
 
 ## 4 - Analyse comparative
 
+TBD
+
 ## 5 - Application Flask
+
+TBD
+
+### Team
+
+[Nohossat](https://github.com/Nohossat)
+[Valerie](https://github.com/ValerieGrimault)
+[Williams](https://github.com/wbui567)

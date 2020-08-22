@@ -135,8 +135,8 @@ def get_models_results(dataset):
     models = {
         'Regression logistique l1' : LogisticRegression,
         'Regression logistique l2' : LogisticRegression,
-        'Regression logistique Elastic Net' : LogisticRegression
-        #'NB : Naive Bayes' : MultinomialNB, 
+        'Regression logistique Elastic Net' : LogisticRegression,
+        'NB : Naive Bayes' : MultinomialNB, 
         #'Random Forest' : RandomForestClassifier,
         #'XGB': XGBClassifier,
         #'SVC' : SVC,
@@ -174,6 +174,7 @@ def get_models_results(dataset):
         'Regression logistique l1' : [{'random_state' : 0}, {'penalty' : ['l1'], 'solver': ['saga', 'liblinear'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
         'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
         'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
+        'NB : Naive Bayes' : [ None, None ]
     }
     
     # run models with different parameters and different feature extraction methods
