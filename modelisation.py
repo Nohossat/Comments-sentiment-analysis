@@ -109,20 +109,17 @@ def get_models_results(dataset):
     
     # Tf-idf Vectorizer
     tfidf = TfidfVectorizer()
-    X_train_tfidf = tfidf.fit_transform(X_train).toarray()
-    train_data['TF-IDF'] = X_train_tfidf
+    train_data['TF-IDF'] = tfidf.fit_transform(X_train).toarray()
     
     
     # CountVectorizer + N-gram + TF-IDF
     pipe_ngram = make_pipeline(CountVectorizer(min_df=0.0005, ngram_range=(1, 2)), TfidfTransformer())
-    X_train_ngram = pipe_ngram.fit_transform(X_train).toarray()
-    train_data['CV(n-gram) + TF-IDF'] = X_train_ngram
+    train_data['CV(n-gram) + TF-IDF'] = pipe_ngram.fit_transform(X_train).toarray()
     
     
     # TF-IDF Truncated SVD
     pipe_svd_tfidf = make_pipeline(TfidfVectorizer(), TruncatedSVD(n_components=300))
-    X_train_svd = pipe_svd_tfidf.fit_transform(X_train)
-    train_data['CV + TF-IDF + SVD'] = X_train_svd
+    train_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.fit_transform(X_train)
 
     # Word2Vec
     model = Word2Vec.load("models/word2vec.bin")
