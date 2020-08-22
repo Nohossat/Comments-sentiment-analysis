@@ -186,8 +186,8 @@ def get_models_results(dataset):
                           model, 
                           X_train, 
                           y_train, 
-                          default_params = params[name_model][0], 
-                          grid_search_params = params[name_model][1])
+                          default_params = params1[name_model][0], 
+                          grid_search_params = params1[name_model][1])
             except Exception as e:
                 print(e)
             print('training: done')
@@ -199,8 +199,8 @@ def get_models_results(dataset):
                         model, 
                         X_test, 
                         y_test, 
-                        default_params = params[name_model][0], 
-                        grid_search_params = params[name_model][1])
+                        default_params = params1[name_model][0], 
+                        grid_search_params = params1[name_model][1])
             except Exception as e:
                 print(e)
             print('testing: done')
