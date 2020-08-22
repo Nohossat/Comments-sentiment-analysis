@@ -9,3 +9,5 @@ from sklearn.decomposition import TruncatedSVD
 from xgboost.sklearn import XGBClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix, accuracy_score, auc
 from shutil import rmtree
+
+# Analyse comparative des modèles de classification

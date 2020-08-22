@@ -373,7 +373,7 @@ def open_comments_panel(browser):
     return etablissement
 
 
-def scrap_comments(query, nb_comments=3000):
+def scrap_comments(query, nb_comments=6000):
     """
     global function to scrap Booking comments. We want to gather the hotel links first then iterate over them 
     to get at least 300 comments per hotel.
