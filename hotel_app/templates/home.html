@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block title %} {{ titre }} {% endblock %}
+
+{% block head %} 
+   {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="project-title">
+        <h5>{{ titre }}</h5>
+    </div>
+    <div class="hotel-title">
+        <h1>Hotel Simplon</h1>
+    </div>
+</div>
+
+<div class="description">
+    <h2> Bienvenue </h2>
+    <p>{{ desc }}</p>
+</div>
+
+<div class="prestations">
+    <h3> Nos Prestations </h3>
+    <div class="prestations_list">
+        {% for prestation in prestations %}
+        <div class="prestation">
+            <i class="{{ prestation.icon }}"></i>
+            <p> {{ prestation.desc }}</p>
+        </div>
+    {% endfor %}
+    </div>
+    
+</div>
+
+<div class="avis">
+    <h3> Commentaires </h3>
+    <p> Laissez-nous un avis ! </p>
+
+    <form method="POST" action="{{ url_for('create_comment') }}">
+        <div class="form-group">
+          <label for="nom_user">Nom</label>
+          <input type="text" class="form-control" id="nom_user" name="nom_user" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" name="comment" cols="30" rows="6" placeholder="Bonjour Hotel Simplon, "></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary s-btn">Submit</button>
+    </form> 
+
+      <div id="comments">
+          <h4 class="comment-title"> Commentaires de nos clients précédents </h4>
+          <p>{{ nb_comments }} expériences vécues</p>
+          {% for comment in comments %}
+        <div class="comment-item">
+            <div class="comment_text">
+                <div class="comment_username"> {{ comment[0] }}</div>
+                <div class="comment_paragraph">{{ comment[1] }}</div>
+            </div>
+            <div class="comment-separator"></div> 
+            <div class="comment_polarity {{ 'positive' if comment[2] == 'Positif' else 'negative' }}">{{ comment[2] }}</div>
+        </div>
+        {% endfor %}
+      </div>
+</div>
+    
+{% endblock %}
+
+{% block project_title %} {{ titre }} {% endblock %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock %}

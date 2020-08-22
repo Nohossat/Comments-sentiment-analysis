@@ -21,7 +21,7 @@ Booking ne permet pas d'ouvrir la page d'un hôtel dans le même onglet donc on 
 
 Cette démarche nous permet de reprendre le scraping en cas de crash puisque les liens vers les hôtels sont sauvegardés avant de passer à la deuxième étape.
 
-<img width="1000px" src='img/booking.gif' alt='booking_website'>
+<img width="1000px" src='hotel_app/static/img/booking.gif' alt='booking_website'>
 
 ### Données récupérées
 
@@ -38,7 +38,7 @@ Pour chaque hôtel, on récupère au maximum 300 commentaires et les information
 - **LIEU** : Ville de l'établissement
 - **NOTE ETABLISSEMENT** : note moyenne laissée par l'ensemble des commentateurs
 
-<img width="600px" src='img/commentaire_booking.png' alt='booking_commentaire'>
+<img width="600px" src='hotel_app/static/img/commentaire_booking.png' alt='booking_commentaire'>
 
 ### Résilience du scraping
 
