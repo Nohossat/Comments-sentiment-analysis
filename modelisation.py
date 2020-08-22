@@ -21,8 +21,6 @@ from gensim.models import Word2Vec
 # XGBoost
 from xgboost.sklearn import XGBClassifier
 
-# Analyse comparative des modèles de classification
-    
 
 def run_model(model_name, train_name, model, X_train, y_train, default_params = None, grid_search_params = None):
     '''
@@ -61,7 +59,8 @@ def run_model(model_name, train_name, model, X_train, y_train, default_params = 
         best_params = None
             
     # save model
-    pickle.dump(clf, f'models/{model_name}.pkl')
+    # filename = f"models/model.pkl"
+    # pickle.dump(clf, filename)
 
     # get predictions
     y_pred = clf.predict(X_train)
@@ -79,8 +78,7 @@ def run_model(model_name, train_name, model, X_train, y_train, default_params = 
     
     try:
         backup = pd.read_csv('metrics/results.csv')
-    except Exception as e:
-        print(e)
+    except:
         backup = pd.DataFrame([], columns=cols)
     
     model_metrics = pd.DataFrame(results, columns=cols)
@@ -180,7 +178,7 @@ def get_models_results(dataset):
     # run models with different parameters and different feature extraction methods
     for name_model, model in models.items():
         for name_X_train, X_train in train_data.items():
-            #get metrics for train data
+            # get metrics for train data
             try : 
                 run_model(name_model, 
                           f'{name_X_train}_train', 
