@@ -373,7 +373,7 @@ def open_comments_panel(browser):
     return etablissement
 
 
-def scrap_comments(query, nb_comments=6000):
+def scrap_comments(query, nb_comments=2000):
     """
     global function to scrap Booking comments. We want to gather the hotel links first then iterate over them 
     to get at least 300 comments per hotel.
@@ -431,6 +431,7 @@ def scrap_comments(query, nb_comments=6000):
 
         # stop the process when we get the defined number of comments per city
         scrapped_comments = pd.read_csv(f'datasets/backup_booking_{query}.csv')
+        print(scrapped_comments.shape[0])
         if scrapped_comments.shape[0] >= nb_comments :
             break
     
@@ -460,9 +461,11 @@ def merge_datasets(cities):
 
 
 if __name__ == "__main__" :
-    cities = ['Paris', 'Marseille', 'Nice']
+    cities = ['Nantes', 'Marseille', 'Nice']
 
     with multiprocessing.Pool() as pool:
         pool.map(scrap_comments, cities)
 
-    merge_datasets(cities)
+    # merge_datasets(cities)
+
+    # scrap_comments('Paris', 7000)
