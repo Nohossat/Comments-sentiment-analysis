@@ -72,6 +72,6 @@ TBD
 
 ### Team
 
-[Nohossat](https://github.com/Nohossat)
-[Valerie](https://github.com/ValerieGrimault)
-[Williams](https://github.com/wbui567)
+[Nohossat](https://github.com/Nohossat)  
+[Valerie](https://github.com/ValerieGrimault)  
+[Williams](https://github.com/wbui567)  
