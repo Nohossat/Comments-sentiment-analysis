@@ -161,7 +161,7 @@ def get_models_results(dataset):
         # 'Regression logistique l2' : LogisticRegression,
         # 'Regression logistique Elastic Net' : LogisticRegression,
         # 'NB : Naive Bayes' : MultinomialNB, 
-        'Random Forest' : RandomForestClassifier,
+        # 'Random Forest' : RandomForestClassifier,
         'XGB': XGBClassifier,
         'SVC' : SVC,
         #'AdaBoost': AdaBoostClassifier
@@ -195,15 +195,6 @@ def get_models_results(dataset):
     }
 
     params1 = {
-        # 'Regression logistique l1' : [{'random_state' : 0}, {'penalty' : ['l1'], 'solver': ['saga', 'liblinear'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        # 'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        # 'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
-        # 'NB : Naive Bayes' : [ None, None ],
-        'Random Forest' : [{'random_state' : 0}, 
-                            {'criterion' : ['gini'], 
-                            'n_estimators' : [50, 200],
-                            'max_depth': [5, 10, 50],
-                            'n_jobs' : [-1]}],
         'XGB': [{'random_state' : 0}, 
                 {'learning_rate' : [0.05, 0.01, 0.2],
                  'max_depth' : [6, 30, 50],
