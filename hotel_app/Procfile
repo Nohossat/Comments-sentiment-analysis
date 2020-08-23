@@ -1,1 +1,0 @@
-web: gunicorn hotel_app:app --preload
