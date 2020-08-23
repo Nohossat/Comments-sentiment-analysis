@@ -17,7 +17,8 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix, accuracy_score, auc
 
 # NLP
-from gensim.models import Word2Vec
+# from gensim.models import Word2Vec
+from word2vec import embed_corpus
 
 # XGBoost
 from xgboost.sklearn import XGBClassifier
@@ -166,9 +167,10 @@ def get_models_results(dataset):
         pickle.dump(tfidf, open( filename, 'wb'))
 
     # Word2Vec
-    model = Word2Vec.load("models/word2vec.bin")
-    X_train_wv = [ model.wv[sentence.split(' ')] for sentence in X_train ] 
-    train_data['Word2Vec'] = X_train_wv # I have to check here if the format is correct
+    # need the longest comment 
+    max_length_doc = max([len(sentence.split(' ')) for sentence in X])
+    train_data['Word2Vec'] = embed_corpus(X_train)
+    test_data['Word2Vec'] = embed_corpus(X_test, max_length_doc=max_length_doc)
     
     # list models
     models = {
@@ -177,8 +179,8 @@ def get_models_results(dataset):
         # 'Regression logistique Elastic Net' : LogisticRegression,
         # 'NB : Naive Bayes' : MultinomialNB, 
         # 'Random Forest' : RandomForestClassifier,
-        'XGB': XGBClassifier,
         'SVC' : SVC,
+        'XGB': XGBClassifier,
         'AdaBoost': AdaBoostClassifier
     }
     
@@ -195,13 +197,13 @@ def get_models_results(dataset):
                             'max_depth': [5, 10, 50],
                             'n_jobs' : [-1]}], 
         'XGB': [{'random_state' : 0}, 
-                {'learning_rate' : [0.05, 0.01, 0.2],
-                 'max_depth' : [6, 30, 50],
-                 'n_estimators' : [50, 200], 
+                {'learning_rate' : [0.05, 0.2],
+                 'max_depth' : [6, 20],
+                 'n_estimators' : [50, 100], 
                  'n_jobs':[-1]}],
         'SVC' : [{'random_state' : 0}, 
-                { 'C': [1, 5, 10, 50],
-                  'gamma': [0.0001, 0.0005, 0.001, 0.005],
+                { 'C': [1, 5, 50],
+                  'gamma': [0.0001, 0.005],
                  'kernel': ['rbf','sigmoid']}, 
                  ],
         'AdaBoostClassifier' : [ {'random_state' : 0}, 
@@ -210,18 +212,16 @@ def get_models_results(dataset):
     }
 
     params1 = {
-        # 'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        # 'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
-        'XGB': [{'random_state' : 0}, 
-                {'learning_rate' : [0.05, 0.01, 0.2],
-                 'max_depth' : [6, 30, 50],
-                 'n_estimators' : [50, 200], 
-                 'n_jobs':[-1]}],
         'SVC' : [{'random_state' : 0}, 
-                { 'C': [1, 5, 10, 50],
-                  'gamma': [0.0001, 0.0005, 0.001, 0.005],
+                { 'C': [1, 5, 50],
+                  'gamma': [0.0001, 0.005],
                  'kernel': ['rbf','sigmoid']}, 
                  ],
+        'XGB': [{'random_state' : 0}, 
+                {'learning_rate' : [0.05, 0.2],
+                 'max_depth' : [6, 20],
+                 'n_estimators' : [50, 100], 
+                 'n_jobs':[-1]}],
         'AdaBoostClassifier' : [ {'random_state' : 0}, 
                                 {'base_estimator' : [MultinomialNB, SVC], 'n_estimators' : [50, 200]}
                                 ]

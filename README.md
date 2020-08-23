@@ -22,6 +22,40 @@ We created a pipeline which enabled us to compare the combination between severa
 
 [Booking Sentiment Analysis App](https://booking-sentiment-analysis.herokuapp.com/)
 
+## Installation of the Flask application with Docker
+
+### Get Docker image on Docker Hub
+
+```shell
+docker pull nohossat1/booking-sentiment-analysis
+docker run -it -p 5000:5000 --name booking-app nohossat1/booking-sentiment-analysis:latest
+```
+
+The app will run on this URL : 0.0.0.0:5000
+
+
+## Installation of the project with GitHub
+
+```shell
+git clone https://github.com/Nohossat/Comments-sentiment-analysis
+cd Comments-sentiment-analysis
+python -m venv venv/
+source venv/bin/activate # Mac
+source venv/Scripts/activate # Windows
+pip install -r requirements.txt
+
+# run scrap app on Booking.com
+python machine_learning/scrap.py
+
+# generate models 
+python machine_learning/modeling.py
+
+# run app on local machine
+export FLASK_APP=hotel_app
+export FLASK_ENV=development
+flask run
+```
+
 ### Team
 
 [Nohossat](https://github.com/Nohossat)  
