@@ -131,20 +131,24 @@ def get_models_results(dataset):
     
     # get different types of X_train according to feature transformation
     train_data = {}
+    test_data = {}
     
     # Tf-idf Vectorizer
     tfidf = TfidfVectorizer()
     train_data['TF-IDF'] = tfidf.fit_transform(X_train).toarray()
+    test_data['TF-IDF'] = tfidf.transform(X_test).toarray()
     
     
     # CountVectorizer + N-gram + TF-IDF
     pipe_ngram = make_pipeline(CountVectorizer(min_df=0.0005, ngram_range=(1, 2)), TfidfTransformer())
     train_data['CV(n-gram) + TF-IDF'] = pipe_ngram.fit_transform(X_train).toarray()
+    test_data['CV(n-gram) + TF-IDF'] = pipe_ngram.transform(X_test).toarray()
     
     
     # TF-IDF Truncated SVD
     pipe_svd_tfidf = make_pipeline(TfidfVectorizer(), TruncatedSVD(n_components=300))
     train_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.fit_transform(X_train)
+    test_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.transform(X_test)
 
     # Word2Vec
     # model = Word2Vec.load("models/word2vec.bin")
@@ -159,7 +163,7 @@ def get_models_results(dataset):
         # 'NB : Naive Bayes' : MultinomialNB, 
         'Random Forest' : RandomForestClassifier,
         'XGB': XGBClassifier,
-        #'SVC' : SVC,
+        'SVC' : SVC,
         #'AdaBoost': AdaBoostClassifier
     }
     
@@ -205,18 +209,23 @@ def get_models_results(dataset):
                  'max_depth' : [6, 30, 50],
                  'n_estimators' : [50, 200], 
                  'n_jobs':[-1]}],
+        'SVC' : [{'random_state' : 0}, 
+                { 'C': [1, 5, 10, 50],
+                  'gamma': [0.0001, 0.0005, 0.001, 0.005],
+                 'kernel': ['rbf','sigmoid']}, 
+                 ]
     }
     
     # run models with different parameters and different feature extraction methods
     for name_model, model in models.items():
-        for name_X_train, X_train in train_data.items():
+        for prepro_name in train_data.keys() & test_data.keys():
             # get metrics for train data
             try : 
                 # get model
                 clf = run_model(name_model, 
-                          f'{name_X_train}_train', 
+                          f'{prepro_name}_train', 
                           model, 
-                          X_train, 
+                          train_data[prepro_name], 
                           y_train, 
                           default_params = params1[name_model][0], 
                           grid_search_params = params1[name_model][1])
@@ -224,13 +233,13 @@ def get_models_results(dataset):
                 # get metrics for test set
                 model_info = {
                     "model_name" : name_model,
-                    "train_name" : name_X_train,
+                    "train_name" : prepro_name,
                     "best_params" : "",
                     "duration" : 0
                 }
 
                 # you must transform input before getting metrics
-                # get_metrics(clf, X_test, y_test, testing=True, model_info=model_info, filename="metrics/test.csv")
+                get_metrics(clf, test_data[prepro_name], y_test, testing=True, model_info=model_info, filename="metrics/test.csv")
             except Exception as e:
                 print(e)
 
