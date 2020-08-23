@@ -1,0 +1,3 @@
+model_name,feature transformation,accuracy,precision,recall,f1_score,best paramaters,duration
+Regression logistique l1,CV + TF-IDF + SVD,0.9216474133601206,[0.92204042 0.92121849],[0.92739593 0.91544885],[0.92471042 0.91832461],,0
+Regression logistique l1,CV(n-gram) + TF-IDF,0.9216474133601206,[0.9236715  0.91945607],[0.92545983 0.91753653],[0.9245648 0.9184953],,0

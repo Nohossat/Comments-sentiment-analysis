@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 import pickle
+import os
 
 # Scikit-Learn
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -138,17 +139,31 @@ def get_models_results(dataset):
     train_data['TF-IDF'] = tfidf.fit_transform(X_train).toarray()
     test_data['TF-IDF'] = tfidf.transform(X_test).toarray()
     
+    # save pipeline
+    if not os.path.exists("models/tf_idf_pipeline.pkl"):
+        filename = f"models/tf_idf_pipeline.pkl"
+        pickle.dump(tfidf, open( filename, 'wb'))
+    
     
     # CountVectorizer + N-gram + TF-IDF
     pipe_ngram = make_pipeline(CountVectorizer(min_df=0.0005, ngram_range=(1, 2)), TfidfTransformer())
     train_data['CV(n-gram) + TF-IDF'] = pipe_ngram.fit_transform(X_train).toarray()
     test_data['CV(n-gram) + TF-IDF'] = pipe_ngram.transform(X_test).toarray()
     
+    # save pipeline
+    if not os.path.exists("models/cv_ngram_tf_idf_pipeline.pkl"):
+        filename = f"models/cv_ngram_tf_idf_pipeline.pkl"
+        pickle.dump(tfidf, open( filename, 'wb'))
     
     # TF-IDF Truncated SVD
     pipe_svd_tfidf = make_pipeline(TfidfVectorizer(), TruncatedSVD(n_components=300))
     train_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.fit_transform(X_train)
     test_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.transform(X_test)
+
+    # save pipeline
+    if not os.path.exists("models/cv_tf_idf_svd_pipeline.pkl"):
+        filename = f"models/cv_tf_idf_svd_pipeline.pkl"
+        pickle.dump(tfidf, open( filename, 'wb'))
 
     # Word2Vec
     # model = Word2Vec.load("models/word2vec.bin")
@@ -158,13 +173,13 @@ def get_models_results(dataset):
     # list models
     models = {
         # 'Regression logistique l1' : LogisticRegression,
-        # 'Regression logistique l2' : LogisticRegression,
+        'Regression logistique l2' : LogisticRegression,
         # 'Regression logistique Elastic Net' : LogisticRegression,
-        # 'NB : Naive Bayes' : MultinomialNB, 
-        'Random Forest' : RandomForestClassifier,
-        'XGB': XGBClassifier,
-        'SVC' : SVC,
-        #'AdaBoost': AdaBoostClassifier
+        'NB : Naive Bayes' : MultinomialNB, 
+        # 'Random Forest' : RandomForestClassifier,
+        # 'XGB': XGBClassifier,
+        # 'SVC' : SVC,
+        # 'AdaBoost': AdaBoostClassifier
     }
     
     # related params for GridSearch and random_state
@@ -195,25 +210,8 @@ def get_models_results(dataset):
     }
 
     params1 = {
-        # 'Regression logistique l1' : [{'random_state' : 0}, {'penalty' : ['l1'], 'solver': ['saga', 'liblinear'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        # 'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        # 'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
-        # 'NB : Naive Bayes' : [ None, None ],
-        'Random Forest' : [{'random_state' : 0}, 
-                            {'criterion' : ['gini'], 
-                            'n_estimators' : [50, 200],
-                            'max_depth': [5, 10, 50],
-                            'n_jobs' : [-1]}],
-        'XGB': [{'random_state' : 0}, 
-                {'learning_rate' : [0.05, 0.01, 0.2],
-                 'max_depth' : [6, 30, 50],
-                 'n_estimators' : [50, 200], 
-                 'n_jobs':[-1]}],
-        'SVC' : [{'random_state' : 0}, 
-                { 'C': [1, 5, 10, 50],
-                  'gamma': [0.0001, 0.0005, 0.001, 0.005],
-                 'kernel': ['rbf','sigmoid']}, 
-                 ]
+        'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
+        'NB : Naive Bayes' : [ None, None ]
     }
     
     # run models with different parameters and different feature extraction methods
