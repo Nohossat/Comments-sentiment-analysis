@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 import pickle
+import os
 
 # Scikit-Learn
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -138,17 +139,31 @@ def get_models_results(dataset):
     train_data['TF-IDF'] = tfidf.fit_transform(X_train).toarray()
     test_data['TF-IDF'] = tfidf.transform(X_test).toarray()
     
+    # save pipeline
+    if not os.path.exists("models/tf_idf_pipeline.pkl"):
+        filename = f"models/tf_idf_pipeline.pkl"
+        pickle.dump(tfidf, open( filename, 'wb'))
+    
     
     # CountVectorizer + N-gram + TF-IDF
     pipe_ngram = make_pipeline(CountVectorizer(min_df=0.0005, ngram_range=(1, 2)), TfidfTransformer())
     train_data['CV(n-gram) + TF-IDF'] = pipe_ngram.fit_transform(X_train).toarray()
     test_data['CV(n-gram) + TF-IDF'] = pipe_ngram.transform(X_test).toarray()
     
+    # save pipeline
+    if not os.path.exists("models/cv_ngram_tf_idf_pipeline.pkl"):
+        filename = f"models/cv_ngram_tf_idf_pipeline.pkl"
+        pickle.dump(tfidf, open( filename, 'wb'))
     
     # TF-IDF Truncated SVD
     pipe_svd_tfidf = make_pipeline(TfidfVectorizer(), TruncatedSVD(n_components=300))
     train_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.fit_transform(X_train)
     test_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.transform(X_test)
+
+    # save pipeline
+    if not os.path.exists("models/cv_tf_idf_svd_pipeline.pkl"):
+        filename = f"models/cv_tf_idf_svd_pipeline.pkl"
+        pickle.dump(tfidf, open( filename, 'wb'))
 
     # Word2Vec
     # model = Word2Vec.load("models/word2vec.bin")
@@ -158,7 +173,7 @@ def get_models_results(dataset):
     # list models
     models = {
         # 'Regression logistique l1' : LogisticRegression,
-        # 'Regression logistique l2' : LogisticRegression,
+        'Regression logistique l2' : LogisticRegression,
         # 'Regression logistique Elastic Net' : LogisticRegression,
         # 'NB : Naive Bayes' : MultinomialNB, 
         # 'Random Forest' : RandomForestClassifier,
