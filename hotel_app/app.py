@@ -67,7 +67,12 @@ def prepare_test_data(test_review):
     return ' '.join(review_tokens)
 
 def get_model():
-    pass 
+    clf = pickle.load("models/model.pkl")
+    # get points
+    pipe = make_pipeline(CountVectorizer(),
+                        TfidfTransformer())
+
+    return clf, pipe
 
 def fit_model():
     df = pd.read_csv('static/data/dataset_note_booking.csv')
@@ -117,7 +122,7 @@ def save_comment(new_comment, df):
     df.loc[len(df.index)] = new_comment
     df.to_csv('static/data/comments.csv') 
  
-clf, pipe = fit_model() 
+clf, pipe = get_model() 
 
 @app.route('/')
 def index(prestations=None, titre=None, desc=None, comments=None):
