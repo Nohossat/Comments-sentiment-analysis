@@ -1,0 +1,4 @@
+model_name,feature transformation,accuracy,precision,recall,f1_score,best paramaters,duration
+NB : Naive Bayes,TF-IDF_train,0.9413611250627824,,,,,1.5948998928070068
+NB : Naive Bayes,CV(n-gram) + TF-IDF_train,0.9458814665996986,,,,,1.8778648376464844
+Random Forest,TF-IDF_train,0.9909593169261678,,,,"{'criterion': 'gini', 'max_depth': 50, 'n_estimators': 200, 'n_jobs': -1}",372.71939516067505

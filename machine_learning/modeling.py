@@ -53,40 +53,65 @@ def run_model(model_name, train_name, model, X_train, y_train, default_params = 
         grid_clf = GridSearchCV(clf, grid_search_params, n_jobs=-1)
         clf = grid_clf.fit(X_train, y_train)
         best_params = clf.best_params_
-        print(best_params)
     else:
         clf.fit(X_train, y_train)
         best_params = None
             
     # save model
-    # filename = f"models/model.pkl"
-    # pickle.dump(clf, filename)
+    filename = f"models/{model_name}_{train_name}.pkl"
+    pickle.dump(clf, open( filename, 'wb'))
 
-    # get predictions
-    y_pred = clf.predict(X_train)
-    
-    # we will record some metrics in a CSV file for presentation
+    # get predictions and save them to CSV file
     duration = time.time() - start_time
-    accuracy = np.mean(cross_val_score(clf, X_train, y_train, cv=5)) # avg score on the CV
-    precision = precision_score(y_train, y_pred, average=None)
-    recall = recall_score(y_train, y_pred, average=None)
-    f1score = f1_score(y_train, y_pred, average=None)
-    results = [[ model_name, train_name, accuracy, precision, recall, f1score, best_params, duration ]]
+    model_info = {
+        "model_name" : model_name,
+        "train_name" : train_name,
+        "best_params" : best_params,
+        "duration" : duration
+    }
+    get_metrics(clf, X_train, y_train, model_info=model_info)
     
+    return clf
+
+def get_metrics(clf, X, y, testing=False, model_info=None, filename="metrics/train.csv"):
+    # get predictions
+
+    if testing:
+        y_pred = clf.predict(X)
+
+        # we will record some metrics in a CSV file for presentation
+        accuracy = accuracy_score(y, y_pred)
+        precision = precision_score(y, y_pred, average=None)
+        recall = recall_score(y, y_pred, average=None)
+        f1score = f1_score(y, y_pred, average=None)
+    else :
+        accuracy = clf.score(X, y) #improvements : avg score on the CV
+        precision = None
+        recall = None
+        f1score = None
+
+    results = [[ model_info['model_name'], 
+                model_info['train_name'], 
+                accuracy, 
+                precision, 
+                recall, 
+                f1score, 
+                model_info['best_params'], 
+                model_info['duration']]]
+
     # save to csv
     cols = ['model_name', 'feature transformation', 'accuracy', 'precision', 'recall', 'f1_score', 'best paramaters', 'duration']
     
     try:
-        backup = pd.read_csv('metrics/results.csv')
+        backup = pd.read_csv(filename)
     except:
         backup = pd.DataFrame([], columns=cols)
     
     model_metrics = pd.DataFrame(results, columns=cols)
     
     backup = pd.concat([backup, model_metrics])
-    backup.to_csv('metrics/results.csv', index=False)
-    
-    return backup
+    backup.to_csv(filename, index=False)
+    return True
 
 def get_models_results(dataset):
     '''
@@ -109,34 +134,31 @@ def get_models_results(dataset):
     
     # Tf-idf Vectorizer
     tfidf = TfidfVectorizer()
-    X_train_tfidf = tfidf.fit_transform(X_train).toarray()
-    train_data['TF-IDF'] = X_train_tfidf
+    train_data['TF-IDF'] = tfidf.fit_transform(X_train).toarray()
     
     
     # CountVectorizer + N-gram + TF-IDF
     pipe_ngram = make_pipeline(CountVectorizer(min_df=0.0005, ngram_range=(1, 2)), TfidfTransformer())
-    X_train_ngram = pipe_ngram.fit_transform(X_train).toarray()
-    train_data['CV(n-gram) + TF-IDF'] = X_train_ngram
+    train_data['CV(n-gram) + TF-IDF'] = pipe_ngram.fit_transform(X_train).toarray()
     
     
     # TF-IDF Truncated SVD
     pipe_svd_tfidf = make_pipeline(TfidfVectorizer(), TruncatedSVD(n_components=300))
-    X_train_svd = pipe_svd_tfidf.fit_transform(X_train)
-    train_data['CV + TF-IDF + SVD'] = X_train_svd
+    train_data['CV + TF-IDF + SVD'] = pipe_svd_tfidf.fit_transform(X_train)
 
     # Word2Vec
-    model = Word2Vec.load("models/word2vec.bin")
-    X_train_wv = [ model.wv[sentence.split(' ')] for sentence in X_train ] 
-    train_data['Word2Vec'] = X_train_wv
+    # model = Word2Vec.load("models/word2vec.bin")
+    # X_train_wv = [ model.wv[sentence.split(' ')] for sentence in X_train ] 
+    # train_data['Word2Vec'] = X_train_wv
     
     # list models
     models = {
-        'Regression logistique l1' : LogisticRegression,
-        'Regression logistique l2' : LogisticRegression,
-        'Regression logistique Elastic Net' : LogisticRegression,
-        'NB : Naive Bayes' : MultinomialNB, 
-        #'Random Forest' : RandomForestClassifier,
-        #'XGB': XGBClassifier,
+        # 'Regression logistique l1' : LogisticRegression,
+        # 'Regression logistique l2' : LogisticRegression,
+        # 'Regression logistique Elastic Net' : LogisticRegression,
+        # 'NB : Naive Bayes' : MultinomialNB, 
+        'Random Forest' : RandomForestClassifier,
+        'XGB': XGBClassifier,
         #'SVC' : SVC,
         #'AdaBoost': AdaBoostClassifier
     }
@@ -150,8 +172,8 @@ def get_models_results(dataset):
         'Random Forest' : [{'random_state' : 0}, 
                             {'boostrap' : [True], 
                             'criterion' : ['gini'], 
-                            'n_estimators' : [50, 100, 200],
-                            'max_depth': [6, 30, 50],
+                            'n_estimators' : [50, 200],
+                            'max_depth': [5, 10, 50],
                             'n_jobs' : [-1]}], 
         'XGB': [{'random_state' : 0}, 
                 {'learning_rate' : [0.05, 0.01, 0.2],
@@ -169,10 +191,20 @@ def get_models_results(dataset):
     }
 
     params1 = {
-        'Regression logistique l1' : [{'random_state' : 0}, {'penalty' : ['l1'], 'solver': ['saga', 'liblinear'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
-        'NB : Naive Bayes' : [ None, None ]
+        # 'Regression logistique l1' : [{'random_state' : 0}, {'penalty' : ['l1'], 'solver': ['saga', 'liblinear'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
+        # 'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
+        # 'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
+        # 'NB : Naive Bayes' : [ None, None ],
+        'Random Forest' : [{'random_state' : 0}, 
+                            {'criterion' : ['gini'], 
+                            'n_estimators' : [50, 200],
+                            'max_depth': [5, 10, 50],
+                            'n_jobs' : [-1]}],
+        'XGB': [{'random_state' : 0}, 
+                {'learning_rate' : [0.05, 0.01, 0.2],
+                 'max_depth' : [6, 30, 50],
+                 'n_estimators' : [50, 200], 
+                 'n_jobs':[-1]}],
     }
     
     # run models with different parameters and different feature extraction methods
@@ -180,29 +212,27 @@ def get_models_results(dataset):
         for name_X_train, X_train in train_data.items():
             # get metrics for train data
             try : 
-                run_model(name_model, 
+                # get model
+                clf = run_model(name_model, 
                           f'{name_X_train}_train', 
                           model, 
                           X_train, 
                           y_train, 
                           default_params = params1[name_model][0], 
                           grid_search_params = params1[name_model][1])
+                
+                # get metrics for test set
+                model_info = {
+                    "model_name" : name_model,
+                    "train_name" : name_X_train,
+                    "best_params" : "",
+                    "duration" : 0
+                }
+
+                # you must transform input before getting metrics
+                # get_metrics(clf, X_test, y_test, testing=True, model_info=model_info, filename="metrics/test.csv")
             except Exception as e:
                 print(e)
-            print('training: done')
-        
-            # get metrics for test data
-            try : 
-                run_model(name_model, 
-                        f'{name_X_train}_test', 
-                        model, 
-                        X_test, 
-                        y_test, 
-                        default_params = params1[name_model][0], 
-                        grid_search_params = params1[name_model][1])
-            except Exception as e:
-                print(e)
-            print('testing: done')
 
 if __name__ == '__main__':
     dataset_note_booking = pd.read_csv("datasets/processed_data.csv")
