@@ -65,8 +65,12 @@ class Comment():
 
         self.result = predict
 
-    def save_comment(self, df):
-        df.loc[len(df.index)] = [self.author, self.document, self.result]
-        comments_csv = os.path.join(CURRENT_DIR, 'static/data/comments.csv')
-        df.to_csv(comments_csv, index=False) 
+    def save_comment(self, df_path):
+        try :
+            df_comments = pd.read_csv(df_path)
+        except :
+            df_comments = pd.DataFrame([], columns=["nom", "comments", "polarity"])
+
+        df_comments.loc[len(df_comments.index)] = [self.author, self.document, self.result]
+        df_comments.to_csv(df_path, index=False) 
     

@@ -5,4 +5,5 @@ Random Forest,TF-IDF_train,0.9909593169261678,,,,"{'criterion': 'gini', 'max_dep
 Random Forest,CV + TF-IDF + SVD_train,0.9986187845303868,,,,"{'criterion': 'gini', 'max_depth': 50, 'n_estimators': 200, 'n_jobs': -1}",126.66004014015198
 Random Forest,CV(n-gram) + TF-IDF_train,0.9907081868407835,,,,"{'criterion': 'gini', 'max_depth': 50, 'n_estimators': 200, 'n_jobs': -1}",304.4709849357605
 Regression logistique l1,CV + TF-IDF + SVD_train,0.9437468608739328,,,,"{'C': 10.0, 'n_jobs': -1, 'penalty': 'l1', 'solver': 'saga'}",21.45966410636902
-Regression logistique l1,CV(n-gram) + TF-IDF_train,0.9380964339527875,,,,"{'C': 1.0, 'n_jobs': -1, 'penalty': 'l1', 'solver': 'liblinear'}",250.4424707889557
+Regression logistique l1,CV(n-gram) + TF-IDF_train,0.9380964339527876,,,,"{'C': 1.0, 'n_jobs': -1, 'penalty': 'l1', 'solver': 'liblinear'}",250.4424707889557
+Regression logistique l2,CV(n-gram) + TF-IDF_train,0.9568056253139126,,,,"{'C': 1.0, 'n_jobs': -1, 'penalty': 'l2', 'solver': 'saga'}",401.7146112918854

@@ -4,7 +4,6 @@ from hotel_app import app
 
 # Utils
 import numpy as np 
-import re
 import os
 import pickle
 import pandas as pd
@@ -28,13 +27,17 @@ config = {
 
 FILE_REL_PATH = os.path.relpath(__file__)
 CURRENT_DIR = os.path.dirname(FILE_REL_PATH)  # get directory path of file
+PROJECT_DIR = os.path.dirname(CURRENT_DIR)  # get directory path of file
 
 # tell Flask to use the above defined config
 app.config.from_mapping(config)
 
 # get model and transformer pipe
-clf = pickle.load(open("models/Random Forest_TF-IDF_train.pkl", "rb"))
-pipe = pickle.load(open("models/tf_idf_pipeline.pkl", "rb"))
+clf_path = os.path.join(PROJECT_DIR, 'models/Random Forest_TF-IDF_train.pkl')
+pipe_path = os.path.join(PROJECT_DIR, 'models/tf_idf_pipeline.pkl')
+
+clf = pickle.load(open(clf_path, "rb"))
+pipe = pickle.load(open(pipe_path, "rb"))
 
 @app.route('/')
 def index(prestations=None, titre=None, desc=None, comments=None):
@@ -99,9 +102,8 @@ def create_comment(titre=None, parts=None, objectif=None, variables=None, clf=cl
     comment.predict_comment(clf, pipe)
 
     # save to database
-    comments_csv = os.path.join(CURRENT_DIR, 'static/data/comments.csv')
-    df_comments = pd.read_csv(comments_csv)
-    comment.save_comment(df_comments)
+    comments_csv_path = os.path.join(CURRENT_DIR, 'static/data/comments.csv')
+    comment.save_comment(comments_csv_path)
 
     # refresh homepage and go straight to the comments section
     return redirect(url_for('index') + '#comments') 
