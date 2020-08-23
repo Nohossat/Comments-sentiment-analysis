@@ -1,7 +1,11 @@
+# Selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException, ElementNotInteractableException
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.chrome.options import Options 
+
+# utils
 import time
 import numpy as np
 import pandas as pd
@@ -9,21 +13,22 @@ import concurrent.futures
 import multiprocessing
 import pprint
 import re
+import os
 import datetime
 import locale
-from selenium.webdriver.chrome.options import Options 
 from stopit import SignalTimeout as Timeout
 from stopit import TimeoutException
-
 
 # necessary to get french date
 locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
 
-# headless mode : try to set this one
+# headless mode : try to set this one - further improvement
 chrome_options = Options()  
 chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--start-maximized")
-# chrome_options.add_argument("--headless")  
+
+FILE_REL_PATH = os.path.relpath(__file__)
+CURRENT_DIR = os.path.dirname(FILE_REL_PATH)
 
 def make_data_persistent(backup_link, cols, new_data):
     """
@@ -98,7 +103,8 @@ def reload_page(url):
     
     while True:
         try:
-            browser = webdriver.Chrome(options=chrome_options)
+            chromedriver_path = os.path.join(CURRENT_DIR, 'chromedriver')
+            browser = webdriver.Chrome(options=chrome_options, executable_path=chromedriver_path)
             browser.get(url)
             time.sleep(3) # let's the DOM load
             

@@ -166,9 +166,9 @@ def get_models_results(dataset):
         pickle.dump(tfidf, open( filename, 'wb'))
 
     # Word2Vec
-    # model = Word2Vec.load("models/word2vec.bin")
-    # X_train_wv = [ model.wv[sentence.split(' ')] for sentence in X_train ] 
-    # train_data['Word2Vec'] = X_train_wv
+    model = Word2Vec.load("models/word2vec.bin")
+    X_train_wv = [ model.wv[sentence.split(' ')] for sentence in X_train ] 
+    train_data['Word2Vec'] = X_train_wv # I have to check here if the format is correct
     
     # list models
     models = {

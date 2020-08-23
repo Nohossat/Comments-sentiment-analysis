@@ -13,7 +13,7 @@ def get_word_embedding(corpus):
 
 
 if __name__ =='__main__':
-    # model = get_word_embedding(normalized_tokens)
+    model = get_word_embedding(normalized_tokens)
     model = Word2Vec.load("models/word2vec.bin")
     print(model.wv[["qualite/prix", "superb"]])
 

@@ -3,12 +3,15 @@ FROM python:3.7
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY /hotel_app ./hotel_app
-COPY /models ./models
+COPY /hotel_app .
+COPY /models .
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
-CMD ["python", "./hotel_app/app.py"]
+RUN export FLASK_APP=hotel_app
+
+CMD ["flask", "run"]
 
