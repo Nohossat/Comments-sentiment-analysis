@@ -1,74 +1,27 @@
 # Booking Sentiment Analysis
 
-## Consignes
+This Flask app takes as input a user comment and decides if it is positive or not.
 
-Vous venez d'ouvrir un hôtel. Comme vous n'êtes pas sûr de la qualité de votre établissement, vous permettez aux personnes de poster des commentaires mais pas de mettre de note. Cependant, vous voulez quand même déterminer si le commentaire est positif ou négatif.  
-
-Pour cela, vous allez scrapper des commentaires sur booking et leur note associée afin de faire tourner un algorithme de classification pour faire des prédictions sur vos propres commentaires.
-
-## 1 - Récuperation des données
-
-Site de référence : https://www.booking.com
-
-### Contraintes du scraping
-
-On a récupéré les commentaires des hôtels de plusieurs villes françaises telles que **Paris, Marseille, Lyon, etc...**  
-
-Booking ne permet pas d'ouvrir la page d'un hôtel dans le même onglet donc on a procédé en 2 temps :
-
-- Récupération des liens vers les hôtels avec des commentaires (on ignore ceux qui n'ont aucun commentaire)
-- Récupération des commentaires pour chaque hôtel présélectionné
-
-Cette démarche nous permet de reprendre le scraping en cas de crash puisque les liens vers les hôtels sont sauvegardés avant de passer à la deuxième étape.
+We used as reference French comments on the reservation site, Booking.com. 
 
 <img width="1000px" src='hotel_app/static/img/booking.gif' alt='booking_website'>
 
-### Données récupérées
-
-Pour chaque hôtel, on récupère au maximum 300 commentaires et les informations suivantes:
-
-- **NOM** : nom du client ayant laissé le commentaire
-- **PAYS** : pays de provenance du client
-- **FAVORITE** : est-ce que le client a marqué l'établissement parmi ces favoris ?
-- **TITRE** : titre du commentaire laissé par le client
-- **BONS POINTS** : les aspects positifs de l'expérience
-- **MAUVAIS POINTS** : les aspects négatifs de l'expérience
-- **NOTE** : la note laissée par le client
-- **TYPE ETABLISSEMENT**: le type de l'établissement (Appartement, Hôtel, etc..)
-- **LIEU** : Ville de l'établissement
-- **NOTE ETABLISSEMENT** : note moyenne laissée par l'ensemble des commentateurs
+We scraped more than 50k comments, fetching elements such as client name, accomodation, comments and ratings. You can use the **machine-learning/scrap.py** file in order to scrap one query results or several ones in parallel with multiprocessing.
 
 <img width="600px" src='hotel_app/static/img/commentaire_booking.png' alt='booking_commentaire'>
 
-### Résilience du scraping
+## Preprocessing
 
-Plusieurs actions ont été mises en place pour rendre le scraping résilient: 
+We clean the data in the **machine-learning/processing.ipynb**. Common steps such as removing null values, dealing with missing or inconsistent data have been applied before doing more NLP-like steps. Not having enough computing power compelled us to reduce the dataset to 10 000 comments (5000 positive / 5000 negative). With a reduced dataset, we managed to tokenize, lemmatize and stem the comments.
 
-- relance de la page en cas d'apparition du pop-up 'Etes-vous humain?'
-- timeout de 4min pour récupérer les 300 commentaires par hôtel
-- multiprocessing (1 process par ville)
-- backup après chaque commentaire récupéré
+## Modeling
 
-### Limites
+We created a pipeline which enabled us to compare the combination between several feature transformations and models. Ensembling methods yield better results so we eventually used one of them for the Flask app.
 
-Lors du preprocessing, on s'est rendu compte qu'il y avait une prédominance des commentaires positifs. Le scraping a donc du être réalisé une deuxième fois pour récupérer seulement les commentaires négatifs.
+## Flask Application
 
+LINK TO THE APP
 
-## 2 - Analyse des données
-
-TBD
-
-## 3 - Modélisation
-
-TBD
-
-## 4 - Analyse comparative
-
-TBD
-
-## 5 - Application Flask
-
-TBD
 
 ### Team
 
