@@ -20,8 +20,7 @@ We created a pipeline which enabled us to compare the combination between severa
 
 ## Flask Application
 
-LINK TO THE APP
-
+[Booking Sentiment Analysis App](https://booking-sentiment-analysis.herokuapp.com/)
 
 ### Team
 
