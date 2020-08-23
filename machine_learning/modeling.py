@@ -173,13 +173,13 @@ def get_models_results(dataset):
     # list models
     models = {
         # 'Regression logistique l1' : LogisticRegression,
-        'Regression logistique l2' : LogisticRegression,
-        'Regression logistique Elastic Net' : LogisticRegression,
+        # 'Regression logistique l2' : LogisticRegression,
+        # 'Regression logistique Elastic Net' : LogisticRegression,
         # 'NB : Naive Bayes' : MultinomialNB, 
         # 'Random Forest' : RandomForestClassifier,
         'XGB': XGBClassifier,
         'SVC' : SVC,
-        #'AdaBoost': AdaBoostClassifier
+        'AdaBoost': AdaBoostClassifier
     }
     
     # related params for GridSearch and random_state
@@ -210,8 +210,8 @@ def get_models_results(dataset):
     }
 
     params1 = {
-        'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
-        'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
+        # 'Regression logistique l2' : [{'random_state' : 0}, {'penalty' : ['l2'], 'solver': ['saga', 'sag', 'newton-cg', 'lbfgs'], 'C': [1.0, 10.0, 50.0], 'n_jobs' : [-1]}],
+        # 'Regression logistique Elastic Net' : [{'random_state' : 0}, {'penalty' : ['elasticnet'], 'solver': ['saga'], 'l1_ratio' : [0.2, 0.5, 0.8], 'n_jobs' : [-1]}],
         'XGB': [{'random_state' : 0}, 
                 {'learning_rate' : [0.05, 0.01, 0.2],
                  'max_depth' : [6, 30, 50],
@@ -221,7 +221,10 @@ def get_models_results(dataset):
                 { 'C': [1, 5, 10, 50],
                   'gamma': [0.0001, 0.0005, 0.001, 0.005],
                  'kernel': ['rbf','sigmoid']}, 
-                 ]
+                 ],
+        'AdaBoostClassifier' : [ {'random_state' : 0}, 
+                                {'base_estimator' : [MultinomialNB, SVC], 'n_estimators' : [50, 200]}
+                                ]
     }
     
     # run models with different parameters and different feature extraction methods
